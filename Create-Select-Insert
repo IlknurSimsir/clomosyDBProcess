@@ -1,0 +1,111 @@
+var
+  password, DB: String;
+  MyForm: TclForm;
+  Qry: TClSQLiteQuery;
+  vScroll: TCLVertScrollBox;
+  sLabel: TclLabel;
+  i: Integer;
+
+void InsertProducts;
+{
+  try
+    Clomosy.DBSQLiteQuery.Sql.Text = '
+      INSERT INTO Products (name, explanation, quantity, price, category_id, supplier_id) 
+      VALUES("Product a", "This is Product a description", 60, 5464.99, 7, 3);
+      INSERT INTO Products (name, explanation, quantity, price, category_id, supplier_id) 
+      VALUES("Product B", "This is Product B description", 5, 29.99, 2, 3);
+      INSERT INTO Products (name, explanation, quantity, price, category_id, supplier_id) 
+      VALUES("Product C", "This is Product C description", 15, 49.99, 1, 1);';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    ShowMessage('Adding data to the table was successful!');
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+}
+
+void DatabaseConnection;
+var
+  TableExists: Boolean;
+{
+  try
+    Clomosy.DBSQLiteConnect(Clomosy.AppFilesPath + 'EnvanterManagement.db3', '');
+
+    Clomosy.DBSQLiteQuery.Sql.Text = 'SELECT name FROM sqlite_master WHERE type="table" AND name="Products"';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    TableExists = not Clomosy.DBSQLiteQuery.Eof;
+    
+    if not (TableExists)
+    {
+      Clomosy.DBSQLiteQuery.Sql.Text = 'CREATE TABLE Products(
+        id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        explanation TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        price REAL NOT NULL,
+        supplier_id INTEGER NOT NULL,
+        category_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id AUTOINCREMENT)
+      );';
+      Clomosy.DBSQLiteQuery.OpenOrExecute;
+      
+      ShowMessage('Table successfully added to the database!');
+      InsertProducts;
+    }
+    else
+    {
+    InsertProducts;
+      ShowMessage('The Products table already exists.');
+    }
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+}
+}
+
+void GetProduct;
+{
+  try
+    Qry = Clomosy.DBSQLiteQueryWith('SELECT * FROM Products');
+    Qry.OpenOrExecute;
+    
+    if (Qry.Found)
+    {
+      for i = 0 to Qry.RecordCount-1
+      {
+        sLabel = MyForm.AddNewLabel(vScroll, 'Label'+IntToStr(i), '');
+        sLabel.StyledSettings = ssFamily;
+        sLabel.TextSettings.Font.Size = 20;
+        sLabel.Align = alTop;
+        sLabel.Margins.Left = 5;
+        sLabel.Margins.Top = 5; 
+        sLabel.Height = 50;
+        sLabel.Text = '* '+Qry.FieldByName('id').AsString + '  '+ Qry.FieldByName('name').AsString + ' '+ 
+          Qry.FieldByName('explanation').AsString + '  '+ Qry.FieldByName('quantity').AsString + '   '+ 
+          Qry.FieldByName('price').AsString + ' '+ Qry.FieldByName('category_id').AsString + ' '+ 
+          Qry.FieldByName('supplier_id').AsString + ' '+ Qry.FieldByName('created_at').AsString
+          + ' '+ Qry.FieldByName('updated_at').AsString;
+        
+        sLabel.AutoSize = True;
+        sLabel.WordWrap = True;
+        Qry.Next;
+      }  
+    }
+    else
+      ShowMessage('No products found.');
+  except
+    ShowMessage('Exception class: '+LastExceptionClassName+' Exception Message: ' + LastExceptionMessage);
+}
+}
+
+{
+  MyForm = TclForm.Create(self);
+  vScroll = MyForm.AddNewVertScrollBox(MyForm, 'vScrollBox');
+  vScroll.Align = alMostTop;
+  vScroll.Height = MyForm.clheight-70;
+  DatabaseConnection;
+  GetProduct;
+  MyForm.run;
+}
