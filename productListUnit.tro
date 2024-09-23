@@ -1,0 +1,182 @@
+var
+  password, DB: String;
+  UForm: TclForm;
+  Qry: TClSQLiteQuery;
+  vScroll: TCLVertScrollBox;
+  nameLabel,idLabel,explanationLabel,priceLabel,quantityLabel,supplier_idLabel,category_idLabel:TClProLabel;
+  listView1 : TClProListView;
+  designerPanel1 : TClProListViewDesignerPanel;
+  i: Integer;
+  productAddBtn,productDeleteBtn:TCLProButton;
+  productAddUnit,productEditUnit:tclUnit;
+  productList:TclStringList;
+void GoToProductAdd;
+{
+ //Clomosy.RunUnit('productAddUnit');
+ productAddUnit.UnitName='productAddUnit';
+ productAddUnit.CallerForm=UForm;
+ productAddUnit.Run;
+ UForm.clHide;
+}
+
+void DatabaseConnection;
+var
+  TableExists: Boolean;
+{
+  try
+    Clomosy.DBSQLiteConnect(Clomosy.AppFilesPath + 'EnvanterManagement.db3', '');
+
+    Clomosy.DBSQLiteQuery.Sql.Text = 'SELECT name FROM sqlite_master WHERE type="table" AND name="Products"';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    TableExists = not Clomosy.DBSQLiteQuery.Eof;
+    
+    if not (TableExists)
+    {
+      Clomosy.DBSQLiteQuery.Sql.Text = 'CREATE TABLE Products(
+        id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        explanation TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        price REAL NOT NULL,
+        supplier_id INTEGER NOT NULL,
+        category_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id AUTOINCREMENT)
+      )';
+      Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+    }
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+}
+}
+
+void CreateData;
+{
+  idLabel=UForm.AddNewProLabel(designerPanel1, 'idLabel','');
+  idLabel.Align=alClient;
+  idLabel.Margins.Top = 5;
+  designerPanel1.AddPanelObject(idLabel,clText5);
+  idLabel.Visible = False;
+  
+  nameLabel=UForm.AddNewProLabel(designerPanel1, 'nameLabel','');
+  nameLabel.Align=alClient;
+  nameLabel.Margins.Top= 10;
+  nameLabel.Margins.Left=5;
+  nameLabel.Margins.Bottom=10;
+  designerPanel1.AddPanelObject(nameLabel,clCaption);
+  
+  explanationLabel=UForm.AddNewProLabel(designerPanel1, 'explanationLabel','');
+  explanationLabel.Align=alClient;
+  explanationLabel.Margins.Top= 35;
+  explanationLabel.Margins.Left=5;
+  explanationLabel.Margins.Bottom=10;
+  explanationLabel.Margins.Right=10;
+  designerPanel1.AddPanelObject(explanationLabel,clText); 
+  
+  quantityLabel=UForm.AddNewProLabel(designerPanel1, 'quantityLabel','');  
+  quantityLabel.Align=alClient;
+  quantityLabel.Margins.Top= 55;
+  quantityLabel.Margins.Left=5;
+  quantityLabel.Margins.Bottom=10;
+  designerPanel1.AddPanelObject(quantityLabel,clText1);
+  
+  priceLabel=UForm.AddNewProLabel(designerPanel1, 'priceLabel','');
+  priceLabel.Align=alClient;
+  priceLabel.Margins.Top= 80;
+  priceLabel.Margins.Left=5;
+  priceLabel.Margins.Bottom=10;
+  designerPanel1.AddPanelObject(priceLabel,clText2);
+  
+  category_idLabel=UForm.AddNewProLabel(designerPanel1, 'category_idLabel','');  
+  category_idLabel.Align=alClient;
+  category_idLabel.Margins.Top= 105;
+  category_idLabel.Margins.Left=5;
+  category_idLabel.Margins.Bottom=10;
+  designerPanel1.AddPanelObject(category_idLabel,clText3);
+  
+  supplier_idLabel=UForm.AddNewProLabel(designerPanel1, 'supplier_idLabel','');
+  supplier_idLabel.Align=alClient;
+  supplier_idLabel.Margins.Top= 130;
+  supplier_idLabel.Margins.Left=5;
+  supplier_idLabel.Margins.Bottom=10;
+  designerPanel1.AddPanelObject(supplier_idLabel,clText4);
+
+}
+void GetProduct;
+{
+DatabaseConnection;
+  try
+  
+    Qry = Clomosy.DBSQLiteQueryWith('SELECT id as idLabel,name as nameLabel,explanation as explanationLabel,quantity as quantityLabel ,price as priceLabel,supplier_id as supplier_idLabel,category_id as category_idLabel  FROM Products');
+    Qry.OpenOrExecute;
+    
+    
+    if (Qry.Found)
+    {
+      listView1.clLoadProListViewDataFromDataset(Qry);
+      
+    }
+    else
+      ShowMessage('No products found.');
+  except
+
+    ShowMessage('Exception class: '+LastExceptionClassName+' Exception Message: ' + LastExceptionMessage);
+}
+}
+
+ void CreateListView;
+ {
+   ListView1 = UForm.AddNewProListView(UForm,'ListView1');
+   ListView1.Properties.ItemSpace = 10;
+   clComponent.SetupComponent(ListView1,'{"Height" : 150,"Align":"Client","MarginBottom":20,"MarginTop":20,"MarginRight":20,"MarginLeft":20, "ListType":"Cart","ItemColumnCount" : 6,"ItemHeight" : 250,"ItemWidth":150, 
+   "BorderColor":"#F5BCC9", "BorderWidth":2,"RoundWidth":5, "RoundHeight":5}');
+   ListView1.ListType = 'horizontal';
+ }
+
+    void CreateDesignerPanel;
+ {
+   DesignerPanel1 = UForm.AddNewProListViewDesignerPanel(ListView1,'DesignerPanel1'); 
+   clComponent.SetupComponent(DesignerPanel1,'{"Height":100,"Width" : 150,"BackgroundColor":"#F6EDDB","BorderColor":"#F5BCC9","BorderWidth":2,"RoundHeight":20,"RoundWidth":20}');
+   ListView1.SetDesignerPanel(DesignerPanel1);
+ }
+void TaskClick;
+{
+  ShowMessage(' Item: ' + ListView1.clSelectedItemData(clText5));
+}
+void GoToProductEdit
+{
+  productEditUnit.UnitName='productEditUnit';
+  productEditUnit.CallerForm=UForm;
+  Clomosy.GlobalVariableString= ListView1.clSelectedItemData(clText5);
+  productEditUnit.Run;
+  UForm.clHide;
+  
+}
+{ 
+
+  UForm = TclForm.Create(self);
+
+  productAddUnit = TclUnit.Create;
+  productEditUnit = TclUnit.Create;
+  CreateListView;
+  CreateDesignerPanel;
+  DatabaseConnection;
+  CreateData;
+  UForm.AddNewEvent(listView1, tbeOnItemClick, 'GoToProductEdit');
+ 
+  productAddBtn = UForm.AddNewProButton(UForm, 'productAddBtn', 'Add Product');
+  productAddBtn.Align=alMostTop;
+  UForm.AddNewEvent(productAddBtn, tbeOnClick, 'GoToProductAdd');
+  
+  GetProduct;
+  
+  UForm.run;
+}
+
+
+
+
+

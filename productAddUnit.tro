@@ -1,0 +1,64 @@
+var 
+BForm: TclStyleForm;
+btnSaveProduct:TCLButton;
+addName:TCLEdit;
+addExplanation:TCLEdit;
+addQuantity:TCLEdit;
+addPrice:TCLEdit;
+addCategory_id:TCLEdit;
+addSupplier_id:TCLEdit;
+
+void InsertProducts;
+{
+  try
+    Clomosy.DBSQLiteQuery.Sql.Text = '
+      INSERT INTO Products (name, explanation, quantity, price, category_id, supplier_id) 
+      VALUES('+QuotedStr(addName.Text)+', 
+      '+QuotedStr(addExplanation.Text)+', 
+      '+QuotedStr(addQuantity.Text)+',  
+      '+QuotedStr(addPrice.Text)+',  
+      '+QuotedStr(addCategory_id.Text)+',
+      '+QuotedStr(addSupplier_id.Text)+')';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    ShowMessage('Adding data to the table was successful!');
+    Clomosy.RunUnit('productListUnit');
+    BForm.clHide;
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+  
+}
+{
+  BForm=TclStyleForm.Create(Self);
+  addName=BForm.AddNewEdit(BForm,'addName', 'Ürün adını giriniz: ');
+  addName.Align=alTop;
+  addName.margins.Top=20;
+  
+  addExplanation=BForm.AddNewEdit(BForm,'addExplanation', 'Ürün açıklamasını giriniz: ');
+  addExplanation.Align=alTop;
+  addExplanation.margins.Top=25;
+  
+  addQuantity=BForm.AddNewEdit(BForm,'addQuantity', 'Ürün miktarını giriniz: ');
+  addQuantity.Align=alTop;
+  addQuantity.margins.Top=30;
+  
+  addPrice=BForm.AddNewEdit(BForm,'addPrice', 'Ürün fiyatını giriniz: ');
+  addPrice.Align=alTop;
+  addPrice.margins.Top=35;
+  
+  addCategory_id=BForm.AddNewEdit(BForm,'addCategory_id', 'Ürün kategorisini giriniz: ');
+  addCategory_id.Align=alTop;
+  addCategory_id.margins.Top=40;
+  
+  addSupplier_id=BForm.AddNewEdit(BForm,'addSupplier_id', 'Ürün toptancısını giriniz: ');
+  addSupplier_id.Align=alTop;
+  addSupplier_id.margins.Top=45;
+  
+  btnSaveProduct=BForm.AddNewButton(BForm,'btnSaveProduct', 'Ürünü Kaydet');
+  btnSaveProduct.Align=alBottom;
+  addSupplier_id.margins.Top=50;
+  BForm.AddNewEvent(btnSaveProduct,tbeOnClick,'InsertProducts');
+  BForm.Run;
+  
+  
+}
