@@ -1,6 +1,6 @@
 var
 MyForm:TclForm;
-productListBtn,categoryListBtn:TClProButton;
+productListBtn,categoryListBtn,supplierListBtn:TClProButton;
 void RouteToProductList;
 {
   Clomosy.RunUnit('productListUnit');
@@ -8,6 +8,10 @@ void RouteToProductList;
 void RouteToCategoryList;
 {
   Clomosy.RunUnit('categoryListUnit');
+}
+void RouteToSupplierList;
+{
+  Clomosy.RunUnit('supplierListUnit');
 }
 {
   MyForm=TclForm.Create(Self);
@@ -20,5 +24,10 @@ void RouteToCategoryList;
   MyForm.AddNewEvent(categoryListBtn,tbeOnClick,'RouteToCategoryList');
   categoryListBtn.Align=alTop;
   categoryListBtn.Margins.Top=100;
+  
+  supplierListBtn =  MyForm.AddNewButton(MyForm,'supplierListBtn', 'Tedarikçi Listesi');
+  MyForm.AddNewEvent(supplierListBtn,tbeOnClick,'RouteToSupplierList');
+  supplierListBtn.Align=alTop;
+  supplierListBtn.Margins.Top=200;
   MyForm.Run;
 }

@@ -1,0 +1,138 @@
+var 
+UForm: TclStyleForm;
+btnUpdateSupplier,btnDeleteSupplier:TCLButton;
+updateName:TCLEdit;
+updateContact:TCLEdit;
+updateAddress:TCLEdit;
+getId:TCLLabel;
+Qry: TClSQLiteQuery;
+
+void UpdateSupplier;
+{
+  try
+  
+    Clomosy.DBSQLiteQuery.Sql.Text = '
+      UPDATE Supplier SET name ='+QuotedStr(updateName.Text)+',
+      contact= '+QuotedStr(updateContact.Text)+',
+      address='+QuotedStr(updateAddress.Text)+'
+      WHERE id='+QuotedStr(getId.Text)+'
+  ';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    ShowMessage('Updating data to the table was successful!');
+    Clomosy.RunUnit('supplierListUnit');
+    
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+  
+}
+void DatabaseConnection;
+var
+  TableExists: Boolean;
+{
+  try
+    Clomosy.DBSQLiteConnect(Clomosy.AppFilesPath + 'EnvanterManagement.db3', '');
+
+    Clomosy.DBSQLiteQuery.Sql.Text = 'SELECT name FROM sqlite_master WHERE type="table" AND name="Supplier"';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    TableExists = not Clomosy.DBSQLiteQuery.Eof;
+    
+    if not (TableExists)
+    {
+      Clomosy.DBSQLiteQuery.Sql.Text = 'CREATE TABLE Supplier(
+        id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        address TEXT NOT NULL,
+        contact TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id AUTOINCREMENT)
+      );';
+      Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+    }
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+    }
+}
+void GetSupplier;
+{
+DatabaseConnection;
+  try
+  
+    Qry = Clomosy.DBSQLiteQueryWith('SELECT * FROM Supplier WHERE id='+QuotedStr(getId.Text)+'');
+    Qry.OpenOrExecute;
+    
+    
+    if (Qry.Found)
+    {
+      listView1.clLoadProListViewDataFromDataset(Qry);
+
+    }
+    else
+      ShowMessage('No supplier found.');
+  except
+
+    ShowMessage('Exception class: '+LastExceptionClassName+' Exception Message: ' + LastExceptionMessage);
+}
+}
+
+void DeleteSupplier;
+{
+  try
+  
+    Clomosy.DBSQLiteQuery.Sql.Text = 'DELETE FROM Supplier WHERE id='+QuotedStr(getId.Text)+'';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+    ShowMessage('Deleting data was successful!');
+    Clomosy.RunUnit('supplierListUnit');
+    UForm.clHide;
+
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+}
+void ProcNo;
+{
+  ShowMessage('no clicked');
+}
+/*
+void DeleteCheck;
+{
+  Clomosy.AskAndCall('Are you sure to delete this supplier?','DeleteSupplier','ProcNo');
+}*/
+{
+  UForm=TclStyleForm.Create(Self);
+  getId=UForm.AddNewLabel(UForm,'getId','');
+  getId.Visible=False;
+  getId.Text=Clomosy.GlobalVariableString;
+  GetSupplier;
+  
+  updateName=UForm.addNewEdit(UForm,'updateName', 'Ürün adını giriniz: ');
+  updateName.Align=alTop;
+  updateName.margins.Top=20;
+  updateName.Text=Qry.FieldByName('name').AsString;
+  
+  updateAddress=UForm.addNewEdit(UForm,'updateAddress', 'Ürün açıklamasını giriniz: ');
+  updateAddress.Align=alTop;
+  updateAddress.margins.Top=25;
+  updateAddress.Text=Qry.FieldByName('address').AsString;
+  
+  updateContact=UForm.addNewEdit(UForm,'updateContact', 'Ürün miktarını giriniz: ');
+  updateContact.Align=alTop;
+  updateContact.margins.Top=30;
+  updateContact.Text=Qry.FieldByName('contact').AsString;
+  
+  btnUpdateSupplier=UForm.AddNewButton(UForm,'btnUpdateSupplier', 'Ürünü Güncelle');
+  btnUpdateSupplier.Align=alBottom;
+  
+  btnDeleteSupplier=UForm.AddNewButton(UForm,'btnDeleteSupplier', 'Ürünü Sil');
+  btnDeleteSupplier.Align=alBottom;
+  btnDeleteSupplier.Margins.Bottom=30;
+
+  UForm.AddNewEvent(btnDeleteSupplier,tbeOnClick,'DeleteSupplier');
+  UForm.AddNewEvent(btnUpdateSupplier,tbeOnClick,'UpdateSupplier');
+  UForm.Run;
+  
+}

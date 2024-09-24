@@ -1,0 +1,49 @@
+var 
+BForm: TclStyleForm;
+btnSaveSupplier:TCLButton;
+addName:TCLEdit;
+addAddress:TCLEdit;
+addContact:TCLEdit;
+
+
+void InsertSupplier;
+{
+  try
+    Clomosy.DBSQLiteQuery.Sql.Text = '
+      INSERT INTO Supplier (name, address, contact) 
+      VALUES('+QuotedStr(addName.Text)+', 
+      '+QuotedStr(addAddress.Text)+', 
+      '+QuotedStr(addContact.Text)+')';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    ShowMessage('Adding data to the table was successful!');
+    Clomosy.RunUnit('supplierListUnit');
+    BForm.clHide;
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+  
+}
+{
+  BForm=TclStyleForm.Create(Self);
+  addName=BForm.AddNewEdit(BForm,'addName', 'Tedarikçi adını giriniz: ');
+  addName.Align=alTop;
+  addName.margins.Top=20;
+  
+  addAddress=BForm.AddNewEdit(BForm,'addAddress', 'Tedarikçi adresini giriniz: ');
+  addAddress.Align=alTop;
+  addAddress.margins.Top=25;
+  
+  addContact=BForm.AddNewEdit(BForm,'addContact', 'Tedarikçi iletişim giriniz: ');
+  addContact.Align=alTop;
+  addContact.margins.Top=30;
+  
+
+  
+  btnSaveSupplier=BForm.AddNewButton(BForm,'btnSaveSupplier', 'Tedarikçi Kaydet');
+  btnSaveSupplier.Align=alBottom;
+
+  BForm.AddNewEvent(btnSaveSupplier,tbeOnClick,'InsertSupplier');
+  BForm.Run;
+  
+  
+}
