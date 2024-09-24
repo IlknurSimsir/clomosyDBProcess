@@ -2,30 +2,19 @@ var
 AForm: TclStyleForm;
 btnUpdateCategory,btnDeleteCategory:TCLButton;
 updateName:TCLEdit;
-updateExplanation:TCLEdit;
-updateQuantity:TCLEdit;
-updatePrice:TCLEdit;
-updateCategory_id:TCLEdit;
-updateSupplier_id:TCLEdit;
 getId:TCLLabel;
 Qry: TClSQLiteQuery;
 
-void UpdateProducts;
+void UpdateCategory;
 {
   try
   
     Clomosy.DBSQLiteQuery.Sql.Text = '
-      UPDATE Products SET name ='+QuotedStr(updateName.Text)+',
-      explanation= '+QuotedStr(updateExplanation.Text)+',
-      quantity='+QuotedStr(updateQuantity.Text)+',
-      price='+QuotedStr(updatePrice.Text)+',
-      category_id='+QuotedStr(updateCategory_id.Text)+',
-      supplier_id='+QuotedStr(updateSupplier_id.Text)+'
-      WHERE id='+QuotedStr(getId.Text)+'
+      UPDATE Category SET name ='+QuotedStr(updateName.Text)+'
   ';
     Clomosy.DBSQLiteQuery.OpenOrExecute;
     ShowMessage('Updating data to the table was successful!');
-    Clomosy.RunUnit('productListUnit');
+    Clomosy.RunUnit('categoryListUnit');
     AForm.clHide;
   except
     ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
@@ -60,7 +49,7 @@ var
     ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
 }
 }
-void GetProduct;
+void GetCategory;
 {
 DatabaseConnection;
   try
@@ -104,28 +93,28 @@ void ProcNo;
 /*
 void DeleteCheck;
 {
-  Clomosy.AskAndCall('Are you sure to delete this product?','DeleteCatgory','ProcNo');
+  Clomosy.AskAndCall('Are you sure to delete this category?','DeleteCategory','ProcNo');
 }*/
 {
   AForm=TclStyleForm.Create(Self);
   getId=AForm.AddNewLabel(AForm,'getId','');
   getId.Visible=False;
   getId.Text=Clomosy.GlobalVariableString;
-  GetProduct;
+  GetCategory;
   
-  updateName=AForm.addNewEdit(AForm,'updateName', 'Ürün adını giriniz: ');
+  updateName=AForm.addNewEdit(AForm,'updateName', 'Kategori adını giriniz: ');
   updateName.Align=alTop;
   updateName.margins.Top=20;
   updateName.Text=Qry.FieldByName('name').AsString;
   
-  btnUpdateCategory=AForm.AddNewButton(AForm,'btnUpdateCategory', 'Ürünü Güncelle');
+  btnUpdateCategory=AForm.AddNewButton(AForm,'btnUpdateCategory', 'Kateü Güncelle');
   btnUpdateCategory.Align=alBottom;
   
-  btnDeleteCategory=AForm.AddNewButton(AForm,'btnDeleteCategory', 'Ürünü Sil');
+  btnDeleteCategory=AForm.AddNewButton(AForm,'btnDeleteCategory', 'Kategori Sil');
   btnDeleteCategory.Align=alBottom;
   btnDeleteCategory.Margins.Bottom=30;
 
-  AForm.AddNewEvent(btnDeleteCategory,tbeOnClick,'DeleteProducts');
+  AForm.AddNewEvent(btnDeleteCategory,tbeOnClick,'DeleteCategory');
   AForm.AddNewEvent(btnUpdateCategory,tbeOnClick,'UpdateCategory');
   AForm.Run;
   

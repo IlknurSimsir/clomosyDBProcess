@@ -1,0 +1,34 @@
+var 
+BForm: TclStyleForm;
+btnSaveCategory:TCLButton;
+addName:TCLEdit;
+
+void InsertCategory;
+{
+  try
+    Clomosy.DBSQLiteQuery.Sql.Text = '
+      INSERT INTO Category (name) 
+      VALUES('+QuotedStr(addName.Text)+')';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    ShowMessage('Adding data to the table was successful!');
+    Clomosy.RunUnit('categoryListUnit');
+    BForm.clHide;
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+  
+}
+{
+  BForm=TclStyleForm.Create(Self);
+  addName=BForm.AddNewEdit(BForm,'addName', 'Ürün adını giriniz: ');
+  addName.Align=alTop;
+  addName.margins.Top=20;
+  
+  btnSaveCategory=BForm.AddNewButton(BForm,'btnSaveCategory', 'Ürünü Kaydet');
+  btnSaveCategory.Align=alBottom;
+
+  BForm.AddNewEvent(btnSaveCategory,tbeOnClick,'InsertCategory');
+  BForm.Run;
+  
+  
+}

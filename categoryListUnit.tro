@@ -1,0 +1,142 @@
+var
+  password, DB: String;
+  UForm: TclForm;
+  Qry: TClSQLiteQuery;
+  vScroll: TCLVertScrollBox;
+  nameLabel,idLabel:TClProLabel;
+  listView1 : TClProListView;
+  designerPanel1 : TClProListViewDesignerPanel;
+  i: Integer;
+  categoryAddBtn,categoryDeleteBtn:TCLProButton;
+  categoryAddUnit,categoryEditUnit:tclUnit;
+  categoryList:TclStringList;
+void GoToCategoryAdd;
+{
+ //Clomosy.RunUnit('productAddUnit');
+ categoryAddUnit.UnitName='categoryAddUnit';
+ categoryAddUnit.CallerForm=UForm;
+ categoryAddUnit.Run;
+ UForm.clHide;
+}
+
+void DatabaseConnection;
+var
+  TableExists: Boolean;
+{
+  try
+    Clomosy.DBSQLiteConnect(Clomosy.AppFilesPath + 'EnvanterManagement.db3', '');
+
+    Clomosy.DBSQLiteQuery.Sql.Text = 'SELECT name FROM sqlite_master WHERE type="table" AND name="Category"';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    TableExists = not Clomosy.DBSQLiteQuery.Eof;
+    
+    if not (TableExists)
+    {
+      Clomosy.DBSQLiteQuery.Sql.Text = 'CREATE TABLE Category(
+        id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id AUTOINCREMENT)
+      )';
+      Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+    }
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+}
+}
+
+void CreateData;
+{
+  idLabel=UForm.AddNewProLabel(designerPanel1, 'idLabel','');
+  idLabel.Align=alClient;
+  idLabel.Margins.Top = 5;
+  designerPanel1.AddPanelObject(idLabel,clText5);
+  idLabel.Visible = False;
+  
+  nameLabel=UForm.AddNewProLabel(designerPanel1, 'nameLabel','');
+  nameLabel.Align=alClient;
+  nameLabel.Margins.Top= 10;
+  nameLabel.Margins.Left=5;
+  nameLabel.Margins.Bottom=10;
+  designerPanel1.AddPanelObject(nameLabel,clCaption);
+  
+
+
+}
+void GetCategory;
+{
+DatabaseConnection;
+  try
+  
+    Qry = Clomosy.DBSQLiteQueryWith('SELECT id as idLabel,name as nameLabel FROM Category');
+    Qry.OpenOrExecute;
+    
+    
+    if (Qry.Found)
+    {
+      listView1.clLoadProListViewDataFromDataset(Qry);
+      
+    }
+    else
+      ShowMessage('No category found.');
+  except
+
+    ShowMessage('Exception class: '+LastExceptionClassName+' Exception Message: ' + LastExceptionMessage);
+}
+}
+
+ void CreateListView;
+ {
+   ListView1 = UForm.AddNewProListView(UForm,'ListView1');
+   ListView1.Properties.ItemSpace = 10;
+   clComponent.SetupComponent(ListView1,'{"Height" : 150,"Align":"Client","MarginBottom":20,"MarginTop":20,"MarginRight":20,"MarginLeft":20, "ListType":"Cart","ItemColumnCount" : 6,"ItemHeight" : 250,"ItemWidth":150, 
+   "BorderColor":"#F5BCC9", "BorderWidth":2,"RoundWidth":5, "RoundHeight":5}');
+   ListView1.ListType = 'horizontal';
+ }
+
+    void CreateDesignerPanel;
+ {
+   DesignerPanel1 = UForm.AddNewProListViewDesignerPanel(ListView1,'DesignerPanel1'); 
+   clComponent.SetupComponent(DesignerPanel1,'{"Height":100,"Width" : 150,"BackgroundColor":"#F6EDDB","BorderColor":"#F5BCC9","BorderWidth":2,"RoundHeight":20,"RoundWidth":20}');
+   ListView1.SetDesignerPanel(DesignerPanel1);
+ }
+void TaskClick;
+{
+  ShowMessage(' Item: ' + ListView1.clSelectedItemData(clText5));
+}
+void GoToCategoryEdit
+{
+  categoryEditUnit.UnitName='categoryEditUnit';
+  categoryEditUnit.CallerForm=UForm;
+  Clomosy.GlobalVariableString= ListView1.clSelectedItemData(clText5);
+  categoryEditUnit.Run;
+  UForm.clHide;
+}
+{ 
+
+  UForm = TclForm.Create(self);
+
+  categoryAddUnit = TclUnit.Create;
+  categoryEditUnit = TclUnit.Create;
+  CreateListView;
+  CreateDesignerPanel;
+  DatabaseConnection;
+  CreateData;
+  UForm.AddNewEvent(listView1, tbeOnItemClick, 'GoToCategoryEdit');
+ 
+  categoryAddBtn = UForm.AddNewProButton(UForm, 'categoryAddBtn', 'Add Category');
+  categoryAddBtn.Align=alMostTop;
+  UForm.AddNewEvent(categoryAddBtn, tbeOnClick, 'GoToCategoryAdd');
+  
+  GetCategory;
+  
+  UForm.run;
+}
+
+
+
+
+
