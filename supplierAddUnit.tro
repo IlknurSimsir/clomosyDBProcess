@@ -1,10 +1,11 @@
 var 
 BForm: TclStyleForm;
-btnSaveSupplier:TCLButton;
-addName:TCLEdit;
-addAddress:TCLEdit;
-addContact:TCLEdit;
-
+btnSaveSupplier:TClProButton;
+addName:TclProEdit;
+addAddress:TclProEdit;
+addContact:TclProEdit;
+ProPanel1 : TclProPanel;
+addNameLabel,addContactLabel,addAddressLabel,supplierHeadLabel:TClProLabel;
 
 void InsertSupplier;
 {
@@ -25,25 +26,101 @@ void InsertSupplier;
 }
 {
   BForm=TclStyleForm.Create(Self);
-  addName=BForm.AddNewEdit(BForm,'addName', 'Tedarikçi adını giriniz: ');
+  BForm.SetFormColor('#ffc6b3','#d6ebff',clGCross);
+  
+  ProPanel1=BForm.AddNewProPanel(BForm,'ProPanel1');
+  ProPanel1.Align=alClient;
+  ProPanel1.Height =Bform.clHeight;
+  ProPanel1.Width =Bform.clWidth;
+  ProPanel1.clProSettings.IsFill = True; 
+  ProPanel1.clProSettings.IsRound = True;
+  ProPanel1.SetclProSettings(ProPanel1.clProSettings);
+  
+  supplierHeadLabel = BForm.AddNewProLabel(ProPanel1, 'supplierHeadLabel', 'Supplier Add');
+  supplierHeadLabel.Align=alTop;
+  supplierHeadLabel.Margins.Top=BForm.clHeight/30;
+  supplierHeadLabel.clProSettings.FontVertAlign = palcenter;
+  supplierHeadLabel.clProSettings.FontHorzAlign = palcenter;
+  supplierHeadLabel.clProSettings.FontSize = 17;
+  supplierHeadLabel.clProSettings.TextSettings.Font.Style = [fsBold];
+  supplierHeadLabel.SetclProSettings(supplierHeadLabel.clProSettings);
+  
+  addNameLabel = BForm.AddNewProLabel(ProPanel1, 'addNameLabel', 'Supplier Name ');
+  addNameLabel.margins.Top=Bform.clHeight/20;
+  addNameLabel.margins.Left=12;
+  addNameLabel.clProSettings.FontSize =15;
+  addNameLabel.Align=alTop;
+  addNameLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addNameLabel.SetclProSettings(addNameLabel.clProSettings);
+  
+  addName=Bform.AddNewProEdit(ProPanel1,'addName', 'Please enter the supplier name : ');
   addName.Align=alTop;
-  addName.margins.Top=20;
+  addName.margins.Top=Bform.clHeight/60;
+  addName.Margins.Right=BForm.clWidth/40;
+  addName.Margins.Left=BForm.clWidth/40;
+  addName.Height=45;
+  addName.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addName.clProSettings.RoundHeight = 15;
+  addName.clProSettings.RoundWidth = 15;
+  addName.clProSettings.BorderWidth = 3;
+  addName.SetclProSettings(addName.clProSettings);
   
-  addAddress=BForm.AddNewEdit(BForm,'addAddress', 'Tedarikçi adresini giriniz: ');
+  addAddressLabel = BForm.AddNewProLabel(ProPanel1, 'addAddressLabel', 'Supplier Address ');
+  addAddressLabel.margins.Top=Bform.clHeight/20;
+  addAddressLabel.margins.Left=12;
+  addAddressLabel.Align=alTop;
+  addAddressLabel.clProSettings.FontSize =15;
+  addAddressLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addAddressLabel.SetclProSettings(addAddressLabel.clProSettings);
+  addAddress=Bform.AddNewProEdit(ProPanel1,'addAddress', 'Please enter the supplier address : ');
   addAddress.Align=alTop;
-  addAddress.margins.Top=25;
+  addAddress.margins.Top=Bform.clHeight/60;
+  addAddress.Margins.Right=BForm.clWidth/40;
+  addAddress.Margins.Left=BForm.clWidth/40;
+  addAddress.Height=45;
+  addAddress.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addAddress.clProSettings.RoundHeight = 15;
+  addAddress.clProSettings.RoundWidth = 15;
+  addAddress.clProSettings.BorderWidth = 3;
+  addAddress.SetclProSettings(addAddress.clProSettings);
   
-  addContact=BForm.AddNewEdit(BForm,'addContact', 'Tedarikçi iletişim giriniz: ');
+  addContactLabel = BForm.AddNewProLabel(ProPanel1, 'addContactLabel', 'Supplier Contact ');
+  addContactLabel.margins.Top=Bform.clHeight/20;
+  addContactLabel.margins.Left=12;
+  addContactLabel.Align=alTop;
+  addContactLabel.clProSettings.FontSize =15;
+  addContactLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addContactLabel.SetclProSettings(addContactLabel.clProSettings);
+  
+  addContact=Bform.AddNewProEdit(ProPanel1,'addContact', 'Please enter the supplier  contact : ');
   addContact.Align=alTop;
-  addContact.margins.Top=30;
+  addContact.margins.Top=Bform.clHeight/60;
+  addContact.Margins.Right=BForm.clWidth/40;
+  addContact.Margins.Left=BForm.clWidth/40;
+  addContact.Height=45;
+  addContact.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addContact.clProSettings.RoundHeight = 15;
+  addContact.clProSettings.RoundWidth = 15;
+  addContact.clProSettings.BorderWidth = 3;
+  addContact.SetclProSettings(addContact.clProSettings);
   
-
+  btnSaveSupplier=Bform.AddNewProButton(ProPanel1,'btnSaveSupplier', 'Save Supplier');
+  btnSaveSupplier.Align=alTop;
+  btnSaveSupplier.margins.Top=Bform.clHeight/30;
+  btnSaveSupplier.Margins.Right=Bform.clWidth/40;
+  btnSaveSupplier.Margins.Left=Bform.clWidth/40;
+  btnSaveSupplier.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  btnSaveSupplier.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  btnSaveSupplier.clProSettings.RoundHeight = 15;
+  btnSaveSupplier.clProSettings.RoundWidth = 15;
+  btnSaveSupplier.clProSettings.BorderWidth = 3;
+  btnSaveSupplier.clProSettings.FontSize = 17;
+  btnSaveSupplier.clProSettings.TextSettings.Font.Style = [fsItalic,fsBold];
+  btnSaveSupplier.SetclProSettings(btnSaveSupplier.clProSettings);
+ 
   
-  btnSaveSupplier=BForm.AddNewButton(BForm,'btnSaveSupplier', 'Tedarikçi Kaydet');
-  btnSaveSupplier.Align=alBottom;
-
-  BForm.AddNewEvent(btnSaveSupplier,tbeOnClick,'InsertSupplier');
-  BForm.Run;
+  Bform.AddNewEvent(btnSaveSupplier,tbeOnClick,'InsertSupplier');
+  Bform.Run;
   
   
 }

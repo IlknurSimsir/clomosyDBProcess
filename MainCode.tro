@@ -1,6 +1,8 @@
 var
 MyForm:TclForm;
 productListBtn,categoryListBtn,supplierListBtn:TClProButton;
+ProPanelMain:TclProPanel;
+mainHeadLabel:TCLProLabel;
 void RouteToProductList;
 {
   Clomosy.RunUnit('productListUnit');
@@ -15,19 +17,79 @@ void RouteToSupplierList;
 }
 {
   MyForm=TclForm.Create(Self);
-  productListBtn =  MyForm.AddNewButton(MyForm,'productListBtn', 'Ürün Listesi');
-  MyForm.AddNewEvent(productListBtn,tbeOnClick,'RouteToProductList');
-  productListBtn.Align=alBottom;
-  productListBtn.Margins.Bottom=100;
+  MyForm.SetFormColor('#ffc6b3','#d6ebff',clGCross);
+  ProPanelMain=MyForm.AddNewProPanel(MyForm,'ProPanelMain');
+  ProPanelMain.Height=MyForm.clHeight;
+  ProPanelMain.Width=MyForm.clWidth;
+  ProPanelMain.Align=alClient;
+  ProPanelMain.clProSettings.IsFill = True; 
+  ProPanelMain.clProSettings.IsRound = True;
+  ProPanelMain.SetclProSettings(ProPanelMain.clProSettings);
   
-  categoryListBtn =  MyForm.AddNewButton(MyForm,'categoryListBtn', 'Kategori Listesi');
+  mainHeadLabel = MyForm.AddNewProLabel(ProPanelMain, 'mainHeadLabel', 'Envanter Management');
+  mainHeadLabel.Align=alTop;
+  mainHeadLabel.Margins.Top=MyForm.clHeight/30;
+  mainHeadLabel.clProSettings.FontVertAlign = palcenter;
+  mainHeadLabel.clProSettings.FontHorzAlign = palcenter;
+  mainHeadLabel.clProSettings.FontSize = 20;
+  mainHeadLabel.clProSettings.TextSettings.Font.Style = [fsBold];
+  mainHeadLabel.SetclProSettings(mainHeadLabel.clProSettings);
+/* Ürün Listeleme*/
+  productListBtn =  MyForm.AddNewProButton(ProPanelMain,'productListBtn', 'Product List');
+  MyForm.AddNewEvent(productListBtn,tbeOnClick,'RouteToProductList');
+  productListBtn.Align=altop;
+  productListBtn.Margins.Top=MyForm.clHeight/15;
+  productListBtn.Margins.Right=MyForm.clWidth/40;
+  productListBtn.Margins.Left=MyForm.clWidth/40;
+  productListBtn.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  productListBtn.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  productListBtn.clProSettings.RoundHeight = 15;
+  productListBtn.clProSettings.RoundWidth = 15;
+  productListBtn.clProSettings.BorderWidth = 3;
+  productListBtn.clProSettings.FontSize = 17;
+  productListBtn.clProSettings.FontVertAlign = palcenter;
+  productListBtn.clProSettings.FontHorzAlign = palCenter;
+  productListBtn.clProSettings.TextSettings.Font.Style = [fsItalic];
+  productListBtn.clProSettings.IsFill = True; 
+  productListBtn.clProSettings.IsRound = True;
+  productListBtn.SetclProSettings(productListBtn.clProSettings);
+/* Kategor Listeleme*/
+  categoryListBtn =  MyForm.AddNewProButton(ProPanelMain,'categoryListBtn', 'Category List');
   MyForm.AddNewEvent(categoryListBtn,tbeOnClick,'RouteToCategoryList');
   categoryListBtn.Align=alTop;
-  categoryListBtn.Margins.Top=100;
-  
-  supplierListBtn =  MyForm.AddNewButton(MyForm,'supplierListBtn', 'Tedarikçi Listesi');
+  categoryListBtn.Margins.Top=MyForm.clHeight/20;
+  categoryListBtn.Margins.Right=MyForm.clWidth/40;
+  categoryListBtn.Margins.Left=MyForm.clWidth/40;
+  categoryListBtn.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  categoryListBtn.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  categoryListBtn.clProSettings.RoundHeight = 15;
+  categoryListBtn.clProSettings.RoundWidth = 15;
+  categoryListBtn.clProSettings.BorderWidth = 3;
+  categoryListBtn.clProSettings.FontSize = 17;
+  categoryListBtn.clProSettings.FontVertAlign = palcenter;
+  categoryListBtn.clProSettings.FontHorzAlign = palCenter;
+  categoryListBtn.clProSettings.TextSettings.Font.Style = [fsItalic];
+  categoryListBtn.clProSettings.IsFill = True; 
+  categoryListBtn.clProSettings.IsRound = True;
+  categoryListBtn.SetclProSettings(categoryListBtn.clProSettings);
+/* Tedarikçi Listeleme*/
+  supplierListBtn =  MyForm.AddNewProButton(ProPanelMain,'supplierListBtn', 'Supplier List');
   MyForm.AddNewEvent(supplierListBtn,tbeOnClick,'RouteToSupplierList');
   supplierListBtn.Align=alTop;
-  supplierListBtn.Margins.Top=200;
+  supplierListBtn.Margins.Top=MyForm.clHeight/20;
+  supplierListBtn.Margins.Right=MyForm.clWidth/40;
+  supplierListBtn.Margins.Left=MyForm.clWidth/40;
+  supplierListBtn.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  supplierListBtn.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  supplierListBtn.clProSettings.RoundHeight = 15;
+  supplierListBtn.clProSettings.RoundWidth = 15;
+  supplierListBtn.clProSettings.BorderWidth = 3;
+  supplierListBtn.clProSettings.FontSize = 17;
+  supplierListBtn.clProSettings.FontVertAlign = palcenter;
+  supplierListBtn.clProSettings.FontHorzAlign = palCenter;
+  supplierListBtn.clProSettings.TextSettings.Font.Style = [fsItalic];
+  supplierListBtn.clProSettings.IsFill = True; 
+  supplierListBtn.clProSettings.IsRound = True;
+  supplierListBtn.SetclProSettings(supplierListBtn.clProSettings);
   MyForm.Run;
 }

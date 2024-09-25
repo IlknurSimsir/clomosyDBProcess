@@ -3,7 +3,7 @@ var
   UForm: TclForm;
   Qry: TClSQLiteQuery;
   vScroll: TCLVertScrollBox;
-  nameLabel,idLabel,contactLabel,addressLabel:TClProLabel;
+  nameLabel,idLabel,contactLabel,addressLabel,supplierHeadLabel:TClProLabel;
   listView1 : TClProListView;
   designerPanel1 : TClProListViewDesignerPanel;
   i: Integer;
@@ -59,14 +59,14 @@ void CreateData;
   
   nameLabel=UForm.AddNewProLabel(designerPanel1, 'nameLabel','');
   nameLabel.Align=alClient;
-  nameLabel.Margins.Top= 10;
+  nameLabel.Margins.Top= (Uform.clWidth/18);
   nameLabel.Margins.Left=5;
   nameLabel.Margins.Bottom=10;
   designerPanel1.AddPanelObject(nameLabel,clCaption);
 
   addressLabel=UForm.AddNewProLabel(designerPanel1, 'addressLabel','');
   addressLabel.Align=alClient;
-  addressLabel.Margins.Top= 35;
+  addressLabel.Margins.Top= (Uform.clWidth/18)*2;
   addressLabel.Margins.Left=5;
   addressLabel.Margins.Bottom=10;
   addressLabel.Margins.Right=10;
@@ -74,7 +74,7 @@ void CreateData;
   
   contactLabel=UForm.AddNewProLabel(designerPanel1, 'contactLabel','');  
   contactLabel.Align=alClient;
-  contactLabel.Margins.Top= 55;
+  contactLabel.Margins.Top= (Uform.clWidth/18)*3;
   contactLabel.Margins.Left=5;
   contactLabel.Margins.Bottom=10;
   designerPanel1.AddPanelObject(contactLabel,clText1);
@@ -107,15 +107,14 @@ DatabaseConnection;
  {
    ListView1 = UForm.AddNewProListView(UForm,'ListView1');
    ListView1.Properties.ItemSpace = 10;
-   clComponent.SetupComponent(ListView1,'{"Height" : 150,"Align":"Client","MarginBottom":20,"MarginTop":20,"MarginRight":20,"MarginLeft":20, "ListType":"Cart","ItemColumnCount" : 6,"ItemHeight" : 250,"ItemWidth":150, 
-   "BorderColor":"#F5BCC9", "BorderWidth":2,"RoundWidth":5, "RoundHeight":5}');
-   ListView1.ListType = 'horizontal';
+   clComponent.SetupComponent(ListView1,'{"Height" : 150,"Align":"Client", "ListType":"Cart","ItemColumnCount" : 6,"ItemHeight" : 100,"ItemWidth":150}');
+   ListView1.ListType = 'vertical';
  }
 
     void CreateDesignerPanel;
  {
    DesignerPanel1 = UForm.AddNewProListViewDesignerPanel(ListView1,'DesignerPanel1'); 
-   clComponent.SetupComponent(DesignerPanel1,'{"Height":100,"Width" : 150,"BackgroundColor":"#F6EDDB","BorderColor":"#F5BCC9","BorderWidth":2,"RoundHeight":20,"RoundWidth":20}');
+   clComponent.SetupComponent(DesignerPanel1,'{"Height":100,"Width" : 150,"BackgroundColor":"#fffbfa","RoundHeight":20,"RoundWidth":20}');
    ListView1.SetDesignerPanel(DesignerPanel1);
  }
 void TaskClick;
@@ -134,7 +133,7 @@ void GoToSupplierEdit
 { 
 
   UForm = TclForm.Create(self);
-
+  UForm.SetFormColor('#ffc6b3','#d6ebff',clGCross);
   supplierAddUnit = TclUnit.Create;
   supplierEditUnit = TclUnit.Create;
   CreateListView;
@@ -143,8 +142,27 @@ void GoToSupplierEdit
   CreateData;
   UForm.AddNewEvent(listView1, tbeOnItemClick, 'GoToSupplierEdit');
  
-  supplierAddBtn = UForm.AddNewProButton(UForm, 'supplierAddBtn', 'Add Supplier');
-  supplierAddBtn.Align=alMostTop;
+  supplierHeadLabel = UForm.AddNewProLabel(UForm, 'supplierHeadLabel', 'Supplier List');
+  supplierHeadLabel.Align=alMostTop;
+  supplierHeadLabel.Margins.Bottom=UForm.clHeight/50;
+  supplierHeadLabel.clProSettings.FontVertAlign = palcenter;
+  supplierHeadLabel.clProSettings.FontHorzAlign = palcenter;
+  supplierHeadLabel.clProSettings.FontSize =18;
+  supplierHeadLabel.clProSettings.TextSettings.Font.Style = [fsBold];
+  supplierHeadLabel.SetclProSettings(supplierHeadLabel.clProSettings);
+ 
+  
+  supplierAddBtn = UForm.AddNewProButton(UForm, 'supplierAddBtn', '+ Add New Supplier');
+  supplierAddBtn.Align=altop;
+  supplierAddBtn.Margins.Left=Uform.clWidth/2;
+  supplierAddBtn.Margins.Right=Uform.clWidth/20;
+  supplierAddBtn.Height=UForm.clHeight/20;
+  supplierAddBtn.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fffbfa');
+  supplierAddBtn.clProSettings.RoundHeight = 8;
+  supplierAddBtn.clProSettings.RoundWidth = 8;
+  supplierAddBtn.clProSettings.TextSettings.Font.Style = [fsBold];
+  supplierAddBtn.SetclProSettings(supplierAddBtn.clProSettings);
+ 
   UForm.AddNewEvent(supplierAddBtn, tbeOnClick, 'GoToSupplierAdd');
   
   GetSupplier;

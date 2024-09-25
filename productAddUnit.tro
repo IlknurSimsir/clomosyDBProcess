@@ -1,13 +1,12 @@
 var 
 BForm: TclStyleForm;
-btnSaveProduct:TCLButton;
-addName:TCLEdit;
-addExplanation:TCLEdit;
-addQuantity:TCLEdit;
-addPrice:TCLEdit;
-addCategory_id:TCLEdit;
-addSupplier_id:TCLEdit;
-
+btnSaveProduct:TCLProButton;
+addName,addExplanation,addQuantity,addPrice:TCLProEdit;
+addCategory_id,addSupplier_id:TClComboBox;
+i:Integer;
+Qry: TClSQLiteQuery;
+ProPanel1:TclProPanel;
+addNameLabel,productHeadLabel,addExplanationLabel,addPriceLabel,addQuantityLabel:TClProLabel;
 void InsertProducts;
 {
   try
@@ -17,8 +16,8 @@ void InsertProducts;
       '+QuotedStr(addExplanation.Text)+', 
       '+QuotedStr(addQuantity.Text)+',  
       '+QuotedStr(addPrice.Text)+',  
-      '+QuotedStr(addCategory_id.Text)+',
-      '+QuotedStr(addSupplier_id.Text)+')';
+      '+QuotedStr(addCategory_id.GetValueIndex(addCategory_id.ItemIndex))+',
+      '+QuotedStr(addSupplier_id.GetValueIndex(addSupplier_id.ItemIndex))+')';
     Clomosy.DBSQLiteQuery.OpenOrExecute;
     ShowMessage('Adding data to the table was successful!');
     Clomosy.RunUnit('productListUnit');
@@ -28,37 +27,248 @@ void InsertProducts;
   }
   
 }
+void DatabaseConnectionForCid;
+var
+  TableExists: Boolean;
+{
+  try
+    Clomosy.DBSQLiteConnect(Clomosy.AppFilesPath + 'EnvanterManagement.db3', '');
+
+    Clomosy.DBSQLiteQuery.Sql.Text = 'SELECT name FROM sqlite_master WHERE type="table" AND name="Category"';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    TableExists = not Clomosy.DBSQLiteQuery.Eof;
+    
+    if not (TableExists)
+    {
+      Clomosy.DBSQLiteQuery.Sql.Text = 'CREATE TABLE Category(
+        id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id AUTOINCREMENT)
+      )';
+      Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+    }
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+}
+}
+void GetCategory;
+{
+DatabaseConnectionForCid;
+  try
+  
+    Qry = Clomosy.DBSQLiteQueryWith('SELECT * FROM Category');
+    Qry.OpenOrExecute;
+    
+    
+    if (Qry.Found)
+    {
+     addCategory_id.AddItem('Select the Category','');
+    for i = 0 to Qry.RecordCount-1
+      {
+      addCategory_id.AddItem(Qry.FieldByName('name').AsString,Qry.FieldByName('id').AsString);
+      Qry.Next;
+      }
+      
+    }
+ 
+  except
+
+    ShowMessage('Exception class: '+LastExceptionClassName+' Exception Message: ' + LastExceptionMessage);
+}
+}
+
+void DatabaseConnectionForSid;
+var
+  TableExists: Boolean;
+{
+  try
+    Clomosy.DBSQLiteConnect(Clomosy.AppFilesPath + 'EnvanterManagement.db3', '');
+
+    Clomosy.DBSQLiteQuery.Sql.Text = 'SELECT name FROM sqlite_master WHERE type="table" AND name="Supplier"';
+    Clomosy.DBSQLiteQuery.OpenOrExecute;
+    
+    TableExists = not Clomosy.DBSQLiteQuery.Eof;
+    
+    if not (TableExists)
+    {
+      Clomosy.DBSQLiteQuery.Sql.Text = 'CREATE TABLE Supplier(
+        id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        address TEXT NOT NULL,
+        contact TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id AUTOINCREMENT)
+      )';
+      Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+    }
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+}
+}
+void GetSupplier;
+{
+  DatabaseConnectionForSid;
+  try
+    Qry = Clomosy.DBSQLiteQueryWith('SELECT * FROM Supplier');
+    Qry.OpenOrExecute;
+
+    if (Qry.Found)
+    {
+     addSupplier_id.AddItem('Select the Supplier','');
+    for i = 0 to Qry.RecordCount-1
+      {
+      addSupplier_id.AddItem(Qry.FieldByName('name').AsString,Qry.FieldByName('id').AsString);
+      Qry.Next;
+      }
+      
+    }
+    
+  except
+
+    ShowMessage('Exception class: '+LastExceptionClassName+' Exception Message: ' + LastExceptionMessage);
+  }
+}
 {
   BForm=TclStyleForm.Create(Self);
-  addName=BForm.AddNewEdit(BForm,'addName', 'Ürün adını giriniz: ');
+  BForm.clSetStyle(BForm.LightSB);
+  BForm.SetFormColor('#ffc6b3','#d6ebff',clGCross);
+  
+  ProPanel1=BForm.AddNewProPanel(BForm,'ProPanel1');
+  ProPanel1.Align=alClient;
+  ProPanel1.Height =Bform.clHeight;
+  ProPanel1.Width =Bform.clWidth;
+  ProPanel1.clProSettings.IsFill = True; 
+  ProPanel1.clProSettings.IsRound = True;
+  ProPanel1.SetclProSettings(ProPanel1.clProSettings);
+  
+  productHeadLabel = BForm.AddNewProLabel(ProPanel1, 'productHeadLabel', 'Product Add');
+  productHeadLabel.Align=alMostTop;
+  productHeadLabel.Margins.Top=BForm.clHeight/50;
+  productHeadLabel.clProSettings.FontVertAlign = palcenter;
+  productHeadLabel.clProSettings.FontHorzAlign = palcenter;
+  productHeadLabel.clProSettings.FontSize = 17;
+  productHeadLabel.clProSettings.TextSettings.Font.Style = [fsBold];
+  productHeadLabel.SetclProSettings(productHeadLabel.clProSettings);
+  
+  addNameLabel = BForm.AddNewProLabel(ProPanel1, 'addNameLabel', 'Product Name ');
+  addNameLabel.margins.Top=Bform.clHeight/40;
+  addNameLabel.margins.Left=12;
+  addNameLabel.clProSettings.FontSize =15;
+  addNameLabel.Align=alTop;
+  addNameLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addNameLabel.SetclProSettings(addNameLabel.clProSettings);
+  
+  addName=Bform.AddNewProEdit(ProPanel1,'addName', 'Please enter the product name : ');
   addName.Align=alTop;
-  addName.margins.Top=20;
+  addName.margins.Top=Bform.clHeight/60;
+  addName.Margins.Right=BForm.clWidth/40;
+  addName.Margins.Left=BForm.clWidth/40;
+  addName.Height=45;
+  addName.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addName.clProSettings.RoundHeight = 15;
+  addName.clProSettings.RoundWidth = 15;
+  addName.clProSettings.BorderWidth = 3;
+  addName.SetclProSettings(addName.clProSettings);
   
-  addExplanation=BForm.AddNewEdit(BForm,'addExplanation', 'Ürün açıklamasını giriniz: ');
+  
+  addExplanationLabel = BForm.AddNewProLabel(ProPanel1, 'addExplanationLabel', 'Product Explanation ');
+  addExplanationLabel.margins.Top=Bform.clHeight/40;
+  addExplanationLabel.margins.Left=12;
+  addExplanationLabel.clProSettings.FontSize =15;
+  addExplanationLabel.Align=alTop;
+  addExplanationLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addExplanationLabel.SetclProSettings(addExplanationLabel.clProSettings);
+  
+  addExplanation=Bform.AddNewProEdit(ProPanel1,'addExplanation', 'Please enter the product explanation : ');
   addExplanation.Align=alTop;
-  addExplanation.margins.Top=25;
+  addExplanation.margins.Top=Bform.clHeight/60;
+  addExplanation.Margins.Right=BForm.clWidth/40;
+  addExplanation.Margins.Left=BForm.clWidth/40;
+  addExplanation.Height=45;
+  addExplanation.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addExplanation.clProSettings.RoundHeight = 15;
+  addExplanation.clProSettings.RoundWidth = 15;
+  addExplanation.clProSettings.BorderWidth = 3;
+  addExplanation.SetclProSettings(addExplanation.clProSettings);
   
-  addQuantity=BForm.AddNewEdit(BForm,'addQuantity', 'Ürün miktarını giriniz: ');
+  addQuantityLabel = BForm.AddNewProLabel(ProPanel1, 'addQuantityLabel', 'Product Quantity ');
+  addQuantityLabel.margins.Top=Bform.clHeight/40;
+  addQuantityLabel.margins.Left=12;
+  addQuantityLabel.clProSettings.FontSize =15;
+  addQuantityLabel.Align=alTop;
+  addQuantityLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addQuantityLabel.SetclProSettings(addQuantityLabel.clProSettings);
+  
+  addQuantity=Bform.AddNewProEdit(ProPanel1,'addQuantity', 'Please enter the product quantity : ');
   addQuantity.Align=alTop;
-  addQuantity.margins.Top=30;
+  addQuantity.margins.Top=Bform.clHeight/60;
+  addQuantity.Margins.Right=BForm.clWidth/40;
+  addQuantity.Margins.Left=BForm.clWidth/40;
+  addQuantity.Height=45;
+  addQuantity.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addQuantity.clProSettings.RoundHeight = 15;
+  addQuantity.clProSettings.RoundWidth = 15;
+  addQuantity.clProSettings.BorderWidth = 3;
+  addQuantity.SetclProSettings(addQuantity.clProSettings);
   
-  addPrice=BForm.AddNewEdit(BForm,'addPrice', 'Ürün fiyatını giriniz: ');
+
+  addPriceLabel = BForm.AddNewProLabel(ProPanel1, 'addPriceLabel', 'Product Price ');
+  addPriceLabel.margins.Top=Bform.clHeight/40;
+  addPriceLabel.margins.Left=12;
+  addPriceLabel.clProSettings.FontSize =15;
+  addPriceLabel.Align=alTop;
+  addPriceLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addPriceLabel.SetclProSettings(addPriceLabel.clProSettings);
+  
+  addPrice=Bform.AddNewProEdit(ProPanel1,'addPrice', 'Please enter the product price : ');
   addPrice.Align=alTop;
-  addPrice.margins.Top=35;
+  addPrice.margins.Top=Bform.clHeight/60;
+  addPrice.Margins.Right=BForm.clWidth/40;
+  addPrice.Margins.Left=BForm.clWidth/40;
+  addPrice.Height=45;
+  addPrice.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addPrice.clProSettings.RoundHeight = 15;
+  addPrice.clProSettings.RoundWidth = 15;
+  addPrice.clProSettings.BorderWidth = 3;
+  addPrice.SetclProSettings(addPrice.clProSettings);
   
-  addCategory_id=BForm.AddNewEdit(BForm,'addCategory_id', 'Ürün kategorisini giriniz: ');
+  addCategory_id=BForm.AddNewComboBox(BForm,'addCategory_id');
   addCategory_id.Align=alTop;
-  addCategory_id.margins.Top=40;
-  
-  addSupplier_id=BForm.AddNewEdit(BForm,'addSupplier_id', 'Ürün toptancısını giriniz: ');
+  addCategory_id.margins.Top=Bform.clHeight/60;
+  addCategory_id.Margins.Right=BForm.clWidth/40;
+  addCategory_id.Margins.Left=BForm.clWidth/40;
+
+  GetCategory ;
+
+  addSupplier_id=BForm.AddNewComboBox(BForm,'addSupplier_id');
   addSupplier_id.Align=alTop;
-  addSupplier_id.margins.Top=45;
+  addSupplier_id.margins.Top=Bform.clHeight/60;
+  addSupplier_id.Margins.Right=BForm.clWidth/40;
+  addSupplier_id.Margins.Left=BForm.clWidth/40;
   
-  btnSaveProduct=BForm.AddNewButton(BForm,'btnSaveProduct', 'Ürünü Kaydet');
+  GetSupplier;
+  
+  btnSaveProduct=BForm.AddNewProButton(BForm,'btnSaveProduct', 'Product Save');
   btnSaveProduct.Align=alBottom;
-  addSupplier_id.margins.Top=50;
+  btnSaveProduct.margins.Bottom=Bform.clHeight/80;
+  btnSaveProduct.Margins.Right=Bform.clWidth/40;
+  btnSaveProduct.Margins.Left=Bform.clWidth/40;
+  btnSaveProduct.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  btnSaveProduct.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  btnSaveProduct.clProSettings.RoundHeight = 15;
+  btnSaveProduct.clProSettings.RoundWidth = 15;
+  btnSaveProduct.clProSettings.BorderWidth = 3;
+  btnSaveProduct.clProSettings.FontSize = 17;
+  btnSaveProduct.clProSettings.TextSettings.Font.Style = [fsItalic,fsBold];
+  btnSaveProduct.SetclProSettings(btnSaveProduct.clProSettings);
+
   BForm.AddNewEvent(btnSaveProduct,tbeOnClick,'InsertProducts');
   BForm.Run;
-  
   
 }

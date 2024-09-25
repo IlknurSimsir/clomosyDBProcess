@@ -1,8 +1,9 @@
 var 
 BForm: TclStyleForm;
-btnSaveCategory:TCLButton;
-addName:TCLEdit;
-
+btnSaveCategory:TCLProButton;
+addName:TCLProEdit;
+categoryHeadLabel,addNameLabel:TClProLabel;
+ProPanel1:TclProPanel;
 void InsertCategory;
 {
   try
@@ -20,15 +21,67 @@ void InsertCategory;
 }
 {
   BForm=TclStyleForm.Create(Self);
-  addName=BForm.AddNewEdit(BForm,'addName', 'Ürün adını giriniz: ');
-  addName.Align=alTop;
-  addName.margins.Top=20;
+  BForm.SetFormColor('#ffc6b3','#d6ebff',clGCross);
   
-  btnSaveCategory=BForm.AddNewButton(BForm,'btnSaveCategory', 'Ürünü Kaydet');
-  btnSaveCategory.Align=alBottom;
+  ProPanel1=BForm.AddNewProPanel(BForm,'ProPanel1');
+  ProPanel1.Align=alClient;
+  ProPanel1.Height =Bform.clHeight;
+  ProPanel1.Width =Bform.clWidth;
+  ProPanel1.clProSettings.IsFill = True; 
+  ProPanel1.clProSettings.IsRound = True;
+  ProPanel1.SetclProSettings(ProPanel1.clProSettings);
+  
+  categoryHeadLabel = BForm.AddNewProLabel(ProPanel1, 'categoryHeadLabel', 'Category Add');
+  categoryHeadLabel.Align=alTop;
+  categoryHeadLabel.Margins.Top=BForm.clHeight/30;
+  categoryHeadLabel.clProSettings.FontVertAlign = palcenter;
+  categoryHeadLabel.clProSettings.FontHorzAlign = palcenter;
+  categoryHeadLabel.clProSettings.FontSize = 17;
+  categoryHeadLabel.clProSettings.TextSettings.Font.Style = [fsBold];
+  categoryHeadLabel.SetclProSettings(categoryHeadLabel.clProSettings);
+  
+  addNameLabel = BForm.AddNewProLabel(ProPanel1, 'addNameLabel', 'Category Name ');
+  addNameLabel.margins.Top=Bform.clHeight/20;
+  addNameLabel.margins.Left=12;
+  addNameLabel.clProSettings.FontSize =15;
+  addNameLabel.Align=alTop;
+  addNameLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  addNameLabel.SetclProSettings(addNameLabel.clProSettings);
+  
+  addName=Bform.AddNewProEdit(ProPanel1,'addName', 'Please enter the category name : ');
+  addName.Align=alTop;
+  addName.margins.Top=Bform.clHeight/60;
+  addName.Margins.Right=BForm.clWidth/40;
+  addName.Margins.Left=BForm.clWidth/40;
+  addName.Height=45;
+  addName.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  addName.clProSettings.RoundHeight = 15;
+  addName.clProSettings.RoundWidth = 15;
+  addName.clProSettings.BorderWidth = 3;
+  addName.SetclProSettings(addName.clProSettings);
+  
+  btnSaveCategory=Bform.AddNewProButton(ProPanel1,'btnSaveCategory', 'Save Category');
+  btnSaveCategory.Align=alTop;
+  btnSaveCategory.margins.Top=Bform.clHeight/30;
+  btnSaveCategory.Margins.Right=Bform.clWidth/40;
+  btnSaveCategory.Margins.Left=Bform.clWidth/40;
+  btnSaveCategory.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  btnSaveCategory.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  btnSaveCategory.clProSettings.RoundHeight = 15;
+  btnSaveCategory.clProSettings.RoundWidth = 15;
+  btnSaveCategory.clProSettings.BorderWidth = 3;
+  btnSaveCategory.clProSettings.FontSize = 17;
+  btnSaveCategory.clProSettings.TextSettings.Font.Style = [fsItalic,fsBold];
+  btnSaveCategory.SetclProSettings(btnSaveCategory.clProSettings);
 
   BForm.AddNewEvent(btnSaveCategory,tbeOnClick,'InsertCategory');
   BForm.Run;
   
+  
+  /**/
+
+  
+  
+ 
   
 }

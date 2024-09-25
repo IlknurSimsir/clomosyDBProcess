@@ -1,10 +1,12 @@
 var 
 UForm: TclStyleForm;
-btnUpdateSupplier,btnDeleteSupplier:TCLButton;
-updateName:TCLEdit;
-updateContact:TCLEdit;
-updateAddress:TCLEdit;
+btnUpdateSupplier,btnDeleteSupplier:TCLProButton;
+updateName:TCLProEdit;
+updateContact:TCLProEdit;
+updateAddress:TCLProEdit;
 getId:TCLLabel;
+supplierHeadLabel,updateNameLabel,updateContactLabel,updateAddressLabel:TClProLabel;
+ProPanel1 : TclProPanel;
 Qry: TClSQLiteQuery;
 
 void UpdateSupplier;
@@ -104,32 +106,123 @@ void DeleteCheck;
 }*/
 {
   UForm=TclStyleForm.Create(Self);
+  UForm.SetFormColor('#ffc6b3','#d6ebff',clGCross);
+  
+  ProPanel1=UForm.AddNewProPanel(UForm,'ProPanel1');
+  ProPanel1.Align=alClient;
+  ProPanel1.Height =UForm.clHeight;
+  ProPanel1.Width =UForm.clWidth;
+  ProPanel1.clProSettings.IsFill = True; 
+  ProPanel1.clProSettings.IsRound = True;
+  ProPanel1.SetclProSettings(ProPanel1.clProSettings);
+  
+  supplierHeadLabel = UForm.AddNewProLabel(ProPanel1, 'supplierHeadLabel', 'Supplier Edit');
+  supplierHeadLabel.Align=alTop;
+  supplierHeadLabel.Margins.Top=UForm.clHeight/30;
+  supplierHeadLabel.clProSettings.FontVertAlign = palcenter;
+  supplierHeadLabel.clProSettings.FontHorzAlign = palcenter;
+  supplierHeadLabel.clProSettings.FontSize = 17;
+  supplierHeadLabel.clProSettings.TextSettings.Font.Style = [fsBold];
+  supplierHeadLabel.SetclProSettings(supplierHeadLabel.clProSettings);
   getId=UForm.AddNewLabel(UForm,'getId','');
   getId.Visible=False;
   getId.Text=Clomosy.GlobalVariableString;
   GetSupplier;
   
-  updateName=UForm.addNewEdit(UForm,'updateName', 'Ürün adını giriniz: ');
+  updateNameLabel = UForm.AddNewProLabel(ProPanel1, 'updateNameLabel', 'Supplier Name ');
+  updateNameLabel.margins.Top=UForm.clHeight/20;
+  updateNameLabel.margins.Left=12;
+  updateNameLabel.clProSettings.FontSize =15;
+  updateNameLabel.Align=alTop;
+  updateNameLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  updateNameLabel.SetclProSettings(updateNameLabel.clProSettings);
+  
+  updateName=UForm.AddNewProEdit(ProPanel1,'updateName', 'Please enter the supplier name : ');
   updateName.Align=alTop;
-  updateName.margins.Top=20;
+  updateName.margins.Top=UForm.clHeight/60;
+  updateName.Margins.Right=UForm.clWidth/40;
+  updateName.Margins.Left=UForm.clWidth/40;
+  updateName.Height=45;
+  updateName.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  updateName.clProSettings.RoundHeight = 15;
+  updateName.clProSettings.RoundWidth = 15;
+  updateName.clProSettings.BorderWidth = 3;
   updateName.Text=Qry.FieldByName('name').AsString;
+  updateName.SetclProSettings(updateName.clProSettings);
   
-  updateAddress=UForm.addNewEdit(UForm,'updateAddress', 'Ürün açıklamasını giriniz: ');
+  updateAddressLabel = UForm.AddNewProLabel(ProPanel1, 'updateAddressLabel', 'Supplier Address ');
+  updateAddressLabel.margins.Top=UForm.clHeight/20;
+  updateAddressLabel.margins.Left=12;
+  updateAddressLabel.clProSettings.FontSize =15;
+  updateAddressLabel.Align=alTop;
+  updateAddressLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  updateAddressLabel.SetclProSettings(updateAddressLabel.clProSettings);
+  
+  updateAddress=UForm.AddNewProEdit(ProPanel1,'updateAddress', 'Please enter the supplier address : ');
   updateAddress.Align=alTop;
-  updateAddress.margins.Top=25;
+  updateAddress.margins.Top=UForm.clHeight/60;
+  updateAddress.Margins.Right=UForm.clWidth/40;
+  updateAddress.Margins.Left=UForm.clWidth/40;
+  updateAddress.Height=45;
+  updateAddress.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  updateAddress.clProSettings.RoundHeight = 15;
+  updateAddress.clProSettings.RoundWidth = 15;
+  updateAddress.clProSettings.BorderWidth = 3;
   updateAddress.Text=Qry.FieldByName('address').AsString;
+  updateAddress.SetclProSettings(updateAddress.clProSettings);
   
-  updateContact=UForm.addNewEdit(UForm,'updateContact', 'Ürün miktarını giriniz: ');
+  updateContactLabel = UForm.AddNewProLabel(ProPanel1, 'updateContactLabel', 'Supplier Contact ');
+  updateContactLabel.margins.Top=UForm.clHeight/20;
+  updateContactLabel.margins.Left=12;
+  updateContactLabel.clProSettings.FontSize =15;
+  updateContactLabel.Align=alTop;
+  updateContactLabel.clProSettings.TextSettings.Font.Style = [fsItalic];
+  updateContactLabel.SetclProSettings(updateContactLabel.clProSettings);
+  
+  updateContact=UForm.AddNewProEdit(ProPanel1,'updateContact', 'Please enter the supplier contact : ');
   updateContact.Align=alTop;
-  updateContact.margins.Top=30;
+  updateContact.margins.Top=UForm.clHeight/60;
+  updateContact.Margins.Right=UForm.clWidth/40;
+  updateContact.Margins.Left=UForm.clWidth/40;
+  updateContact.Height=45;
+  updateContact.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  updateContact.clProSettings.RoundHeight = 15;
+  updateContact.clProSettings.RoundWidth = 15;
+  updateContact.clProSettings.BorderWidth = 3;
   updateContact.Text=Qry.FieldByName('contact').AsString;
+  updateContact.SetclProSettings(updateContact.clProSettings);
   
-  btnUpdateSupplier=UForm.AddNewButton(UForm,'btnUpdateSupplier', 'Ürünü Güncelle');
+
+  
+   btnUpdateSupplier=UForm.AddNewProButton(UForm,'btnUpdateSupplier', 'Update Category');
   btnUpdateSupplier.Align=alBottom;
+  btnUpdateSupplier.margins.Bottom=UForm.clHeight/30;
+  btnUpdateSupplier.Margins.Right=UForm.clWidth/40;
+  btnUpdateSupplier.Margins.Left=UForm.clWidth/40;
+  btnUpdateSupplier.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  btnUpdateSupplier.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  btnUpdateSupplier.clProSettings.RoundHeight = 15;
+  btnUpdateSupplier.clProSettings.RoundWidth = 15;
+  btnUpdateSupplier.clProSettings.BorderWidth = 3;
+  btnUpdateSupplier.clProSettings.FontSize = 17;
+  btnUpdateSupplier.clProSettings.TextSettings.Font.Style = [fsItalic,fsBold];
+  btnUpdateSupplier.SetclProSettings(btnUpdateSupplier.clProSettings);
   
-  btnDeleteSupplier=UForm.AddNewButton(UForm,'btnDeleteSupplier', 'Ürünü Sil');
+  btnDeleteSupplier=UForm.AddNewProButton(UForm,'btnDeleteSupplier', 'Delete Category');
   btnDeleteSupplier.Align=alBottom;
-  btnDeleteSupplier.Margins.Bottom=30;
+  btnDeleteSupplier.margins.Bottom=UForm.clHeight/30;
+  btnDeleteSupplier.Margins.Right=UForm.clWidth/40;
+  btnDeleteSupplier.Margins.Left=UForm.clWidth/40;
+  btnDeleteSupplier.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fff7f5');
+  btnDeleteSupplier.clProSettings.BorderColor  = clAlphaColor.clHexToColor('#ffefeb');
+  btnDeleteSupplier.clProSettings.RoundHeight = 15;
+  btnDeleteSupplier.clProSettings.RoundWidth = 15;
+  btnDeleteSupplier.clProSettings.BorderWidth = 3;
+  btnDeleteSupplier.clProSettings.FontSize = 17;
+  btnDeleteSupplier.clProSettings.TextSettings.Font.Style = [fsItalic,fsBold];
+  btnDeleteSupplier.SetclProSettings(btnDeleteSupplier.clProSettings);
+  
+  
 
   UForm.AddNewEvent(btnDeleteSupplier,tbeOnClick,'DeleteSupplier');
   UForm.AddNewEvent(btnUpdateSupplier,tbeOnClick,'UpdateSupplier');
