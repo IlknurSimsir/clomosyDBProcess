@@ -100,7 +100,7 @@ DatabaseConnection;
     void CreateDesignerPanel;
  {
    DesignerPanel1 = UForm.AddNewProListViewDesignerPanel(ListView1,'DesignerPanel1'); 
-   clComponent.SetupComponent(DesignerPanel1,'{"Height":100,"Width" : 150,"BackgroundColor":"#fffbfa","RoundHeight":20,"RoundWidth":20}');
+   clComponent.SetupComponent(DesignerPanel1,'{"Height":100,"Width" : 150,"BackgroundColor":"#fffbfa","BorderColor":"#d6f1ff","BorderWidth":3,"RoundHeight":20,"RoundWidth":20}');
    ListView1.SetDesignerPanel(DesignerPanel1);
  }
 void TaskClick;

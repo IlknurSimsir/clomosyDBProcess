@@ -106,9 +106,9 @@ void DeleteCheck;
   ProPanel1.clProSettings.IsRound = True;
   ProPanel1.SetclProSettings(ProPanel1.clProSettings);
   
-  categoryHeadLabel = BForm.AddNewProLabel(ProPanel1, 'categoryHeadLabel', 'Category Add');
+  categoryHeadLabel = AForm.AddNewProLabel(ProPanel1, 'categoryHeadLabel', 'Category Add');
   categoryHeadLabel.Align=alTop;
-  categoryHeadLabel.Margins.Top=BForm.clHeight/30;
+  categoryHeadLabel.Margins.Top=AForm.clHeight/30;
   categoryHeadLabel.clProSettings.FontVertAlign = palcenter;
   categoryHeadLabel.clProSettings.FontHorzAlign = palcenter;
   categoryHeadLabel.clProSettings.FontSize = 17;
